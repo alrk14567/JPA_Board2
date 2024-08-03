@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>register</title>
+    <!--jquery cdn-->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <form action="/user/register" method="post">
+        이메일: <input type="text" name="username" id="username" onblur="usernameCheck()"> <br/>  <!--onkeyup: 입력값이 있을때 마다 확인, onblur: 입력하고 다른데로 커서 이동이 될때 확인-->
+        <p id="check-result"></p> <br/>
+        비밀번호: <input type="text" name="password"> <br/>
+        닉네임: <input type="text" name="nickname"> <br/>
+        <input type="submit" value="회원가입">
+    </form>
+</body>
+<script th:inline="javascript">
+    const usernameCheck = () => {
+        const username=document.getElementById("username").value
+        const checkResult = document.getElementById("check-result");
+        console.log("입력값: ", username)
+        $.ajax({
+           // 요청 박식: post, url: "username-check", 데이터 이메일
+            type: "post",
+            url: "/user/username-check",
+            data: {
+                "username": username
+            },
+            success: function (res) {
+                if (res == "ok") {
+                    console.log("사용 가능한 이메일");
+                    checkResult.innerHTML = "사용 가능한 이메일";
+                    checkResult.style.color="green"
+                } else{
+                    checkResult.innerHTML = "이미 사용중인 이메일";
+                    checkResult.style.color="red"
+                }
+            },
+            error: function (err) {
+                console.log("에러발생", err)
+            }
+        });
+    }
+
+</script>
+</html>
